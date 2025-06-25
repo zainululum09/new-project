@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="py-18">
     <!-- Hero -->
-    <section id="home" class="px-6 py-16 text-center md:px-20">
+    <section id="home" class="h-1/2 px-6 py-16 text-center md:px-20">
       <h1 class="mb-2 text-4xl font-bold">
         Selamat Datang di <br />
         SMP Ibnu Aqil Bogor
@@ -77,7 +77,5 @@
         Hubungi kami di <strong>example@smpibnuaqil.sch.id</strong>
       </p>
     </section>
-
-    <Footer />
   </div>
 </template>

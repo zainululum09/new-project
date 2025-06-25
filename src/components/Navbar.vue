@@ -1,18 +1,27 @@
 <template>
-  <nav class="flex items-center justify-between bg-white px-6 py-4 shadow-md">
-    <img src="/favicon.ico" alt="Logo" class="h-12" />
-    <ul class="hidden gap-6 text-lg font-medium md:flex">
-      <li><a href="#home" class="hover:text-green-600">Home</a></li>
-      <li><a href="#tentang" class="hover:text-green-600">Tentang</a></li>
-      <li><a href="#program" class="hover:text-green-600">Program</a></li>
-      <li><a href="#berita" class="hover:text-green-600">Berita</a></li>
-      <li><a href="#kontak" class="hover:text-green-600">Kontak</a></li>
-    </ul>
-    <a
-      href="#kontak"
-      class="rounded border border-green-700 px-4 py-1 text-green-700 hover:bg-green-700 hover:text-white"
-    >
-      Kontak Kami
-    </a>
-  </nav>
+  <div class="navbar fixed w-full bg-lime-600 py-2 transition-all">
+    <div class="container mx-auto px-4">
+      <div class="navbar-box flex items-center justify-between text-white">
+        <div class="logo">
+          <h1 class="text-4xl font-bold">
+            <i class="bi bi-book mr-2"></i>SMP Ibnu Aqil
+          </h1>
+        </div>
+        <div class="flex gap-20">
+          <ul class="flex gap-16">
+            <li>
+              <a href="#">Beranda</a>
+            </li>
+            <li><a href="#">Profil</a></li>
+            <li><a href="#">Program Unggulan</a></li>
+            <li><a href="#">Prestasi</a></li>
+            <li><a href="#">Kontak</a></li>
+          </ul>
+          <div class="social mx-12">
+            <a href="#">PPDB</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
