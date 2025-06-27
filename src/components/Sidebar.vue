@@ -1,12 +1,17 @@
 <template>
-  <aside :class="`${is_expanded && 'is-expanded'}`">
+  <aside
+    :class="[
+      'sidebar shadow-lg shadow-slate-400',
+      is_expanded && 'is-expanded',
+    ]"
+  >
     <div class="logo">
       <img src="../assets/logo.png" alt="Vue" />
     </div>
 
     <div class="menu-toggle-wrap">
       <button class="menu-toggle" @click="ToggleMenu">
-        <span class="material-icons"> double_arrow </span>
+        <span class="material-icons">double_arrow</span>
       </button>
     </div>
 
@@ -22,11 +27,11 @@
       </router-link>
       <router-link class="button" to="/guru">
         <span class="material-icons">group</span>
-        <span class="text">Data Guru</span>
+        <span class="text">Guru</span>
       </router-link>
       <router-link class="button" to="/siswa">
         <span class="material-icons">people</span>
-        <span class="text">Data Siswa</span>
+        <span class="text">Siswa</span>
       </router-link>
     </div>
 
@@ -41,9 +46,9 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { defineModel } from "vue";
 
-const is_expanded = ref(false);
+const is_expanded = defineModel("expanded");
 
 const ToggleMenu = () => {
   is_expanded.value = !is_expanded.value;
@@ -51,16 +56,24 @@ const ToggleMenu = () => {
 </script>
 
 <style lang="scss" scoped>
-aside {
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 100;
   display: flex;
   flex-direction: column;
-  width: calc(2rem + 40px);
-  min-height: 100vh;
-  overflow: hidden;
+  overflow-y: auto;
   padding: 1rem;
-  background-color: var(--dark);
-  color: var(--light);
-  transition: 0.2s ease-out;
+  background-color: var(--light-alt);
+  color: var(--dark);
+  transition: all 0.3s ease;
+  width: 72px;
+
+  &.is-expanded {
+    width: var(--sidebar-width);
+  }
 
   .logo {
     margin-bottom: 1rem;
@@ -76,16 +89,13 @@ aside {
     position: relative;
     top: 0;
     transition: 0.2s ease-out;
-
     .menu-toggle {
       transition: 0.2s ease-out;
-
       .material-icons {
         font-size: 2rem;
-        color: var(--light);
+        color: var(--dark);
         transition: 0.2s ease-out;
       }
-
       &:hover {
         .material-icons {
           color: var(--primary);
@@ -102,7 +112,7 @@ aside {
   }
 
   h2 {
-    color: var(--grey);
+    color: var(--dark-alt);
     font-size: 0.875rem;
     margin-bottom: 0.5rem;
     text-transform: uppercase;
@@ -110,65 +120,50 @@ aside {
 
   .menu {
     margin: 0 -1rem;
-
     .button {
       display: flex;
       align-items: center;
       text-decoration: none;
-
       padding: 0.5rem 1rem;
-      transition: 0.2s ease-out;
-
       .material-icons {
         font-size: 2rem;
-        color: var(--light);
-        transition: 0.2s ease-out;
+        color: var(--dark);
       }
-
       .text {
-        color: var(--light);
+        color: var(--dark);
         transition: 0.2s ease-out;
       }
-
       &:hover,
       &.router-link-exact-active {
-        background-color: var(--darl-alt);
-
+        background-color: var(--primary);
         .material-icons,
         .text {
-          color: var(--primary);
+          color: var(--light);
         }
         .text {
           text-decoration: underline;
         }
       }
-
       &.router-link-exact-active {
-        border-right: 5px solid var(--primary);
+        border-right: 5px solid var(--primary-alt);
       }
     }
   }
 
   &.is-expanded {
-    width: var(--sidebar-width);
-
     .menu-toggle-wrap {
-      top: -3rem;
+      top: -2rem;
 
       .menu-toggle {
         transform: rotate(-180deg);
       }
     }
-
     h2,
     .button .text {
       opacity: 1;
     }
-
-    .button {
-      .material-icons {
-        margin-right: 1rem;
-      }
+    .button .material-icons {
+      margin-right: 1rem;
     }
   }
 
@@ -177,7 +172,6 @@ aside {
   }
 
   @media (max-width: 768px) {
-    position: fixed;
     z-index: 99;
   }
 }
