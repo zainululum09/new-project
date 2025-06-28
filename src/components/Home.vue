@@ -1,5 +1,4 @@
 <template>
-  <Navbar />>
   <div>
     <!-- Hero -->
     <section
@@ -208,10 +207,6 @@
       </form>
     </section>
   </div>
-  <Foot />
 </template>
 
-<script setup>
-import Navbar from "./Navbar.vue";
-import Foot from "./Footer.vue";
-</script>
+<script setup></script>

@@ -27,6 +27,10 @@ const loadSiswa = async () => {
   }
 };
 
+const goToDetail = (id) => {
+  router.push(`/siswa/${id}`);
+};
+
 const editSiswa = (data) => {
   editing.value = true;
   editingNama.value = data.nama;
@@ -86,11 +90,11 @@ onMounted(loadSiswa);
 </script>
 
 <template>
-  <div class="p-4">
+  <div class="p-1">
     <h2 class="mb-4 text-xl font-bold">{{ route.meta.title }}</h2>
 
-    <div class="flex justify-start gap-6 overflow-x-auto rounded shadow">
-      <div class="w-2/3">
+    <div class="flex justify-start gap-6 overflow-x-auto rounded p-4">
+      <div class="w-2/3 rounded shadow-md">
         <table
           class="w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
         >
@@ -121,7 +125,7 @@ onMounted(loadSiswa);
               <td class="border-t px-4 py-2">
                 <router-link
                   :to="`/siswa/${s.id}`"
-                  class="transition duration-200 hover:text-blue-600"
+                  class="transition duration-200 hover:bg-blue-400"
                 >
                   {{ s.nama }}
                 </router-link>
@@ -149,17 +153,17 @@ onMounted(loadSiswa);
                 class="flex justify-center gap-4 border-t px-4 py-2 text-center"
               >
                 <button
-                  class="rounded bg-blue-600 px-3 py-1 font-medium text-white transition duration-200 hover:bg-blue-400"
+                  class="rounded bg-blue-600 px-1 pt-1 font-medium text-white transition duration-200 hover:bg-blue-400"
                   @click="editSiswa(s)"
                 >
-                  Edit
+                  <span class="material-icons"> edit </span>
                 </button>
 
                 <button
-                  class="rounded bg-red-600 px-3 py-1 font-medium text-white transition duration-200 hover:bg-red-800"
+                  class="rounded bg-red-600 px-1 pt-1 font-medium text-white transition duration-200 hover:bg-red-800"
                   @click="deleteSiswa(s.id)"
                 >
-                  Hapus
+                  <span class="material-icons"> delete </span>
                 </button>
               </td>
             </tr>
@@ -168,7 +172,7 @@ onMounted(loadSiswa);
       </div>
       <div class="w-1/3">
         <div class="overflow-hidden rounded-lg bg-white shadow-md">
-          <div class="bg-blue-600 px-6 py-4 text-lg font-semibold text-white">
+          <div class="text-md bg-blue-600 px-6 py-3 font-semibold text-white">
             {{
               editing
                 ? `✏️ Edit Siswa - ${editingNama}`

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-dashboard">
     <h2>{{ route.meta.title }}</h2>
     <button @click="handleLogout">Logout</button>
     <ul v-if="siswa.length">

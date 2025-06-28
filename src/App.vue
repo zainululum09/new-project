@@ -1,3 +1,25 @@
+<template>
+  <div class="app">
+    <Sidebar v-if="!isPublicPage" v-model:expanded="isExpanded" />
+
+    <main
+      v-if="!isPublicPage"
+      :style="{
+        marginLeft: isExpanded ? 'var(--sidebar-width)' : '72px',
+      }"
+      class="p-4 transition-all duration-300"
+    >
+      <BaseAlert />
+      <transition name="slide-fade" mode="out-in">
+        <RouterView />
+      </transition>
+    </main>
+
+    <!-- Untuk halaman public seperti '/' atau '/login' -->
+    <RouterView v-else />
+  </div>
+</template>
+
 <script setup>
 import { ref, computed } from "vue";
 import { RouterView, useRoute } from "vue-router";
@@ -7,31 +29,9 @@ import BaseAlert from "./components/BaseAlert.vue";
 const route = useRoute();
 const isExpanded = ref(true);
 
-// Deteksi jika saat ini di halaman login
-const isLoginPage = computed(() => route.path === "/login");
+// Halaman tanpa sidebar & alert
+const isPublicPage = computed(() => ["/", "/login"].includes(route.path));
 </script>
-
-<template>
-  <div class="app">
-    <!-- Sidebar hanya muncul jika bukan halaman login -->
-    <Sidebar v-if="!isLoginPage" v-model:expanded="isExpanded" />
-
-    <!-- Main dengan marginLeft hanya jika bukan halaman login -->
-    <main
-      :style="
-        !isLoginPage
-          ? {
-              marginLeft: isExpanded ? 'var(--sidebar-width)' : '72px',
-            }
-          : {}
-      "
-      class="px-8 py-6 transition-all duration-300"
-    >
-      <BaseAlert />
-      <RouterView />
-    </main>
-  </div>
-</template>
 
 <style lang="scss">
 :root {
@@ -73,9 +73,29 @@ main {
   min-height: 100vh;
   padding: 2rem;
   transition: margin-left 0.3s ease;
+  margin-left: 72px;
 
   @media (max-width: 768px) {
     padding-left: 6rem;
   }
+}
+
+main.expanded {
+  margin-left: var(--sidebar-width);
+}
+
+/* Slide-fade transition */
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-enter-from {
+  opacity: 0;
+  transform: translateX(30px);
+}
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(-30px);
 }
 </style>

@@ -3,6 +3,12 @@ import { createRouter, createWebHistory } from "vue-router";
 const routes = [
   {
     path: "/",
+    name: "Home",
+    component: () => import("../components/Home.vue"),
+    meta: { title: "Home" },
+  },
+  {
+    path: "/dashboard",
     name: "Dashboard",
     component: () => import("../views/Dashboard.vue"),
     meta: { title: "Dashboard" },
@@ -51,13 +57,13 @@ const router = createRouter({
 });
 
 // Middleware sederhana: redirect ke login kalau tidak ada token
-router.beforeEach((to, from, next) => {
-  const token = localStorage.getItem("token");
-  if (to.path !== "/login" && !token) {
-    next("/login");
-  } else {
-    next();
-  }
-});
+// router.beforeEach((to, from, next) => {
+//   const token = localStorage.getItem("token");
+//   if (to.path !== "/login" && !token) {
+//     next("/login");
+//   } else {
+//     next();
+//   }
+// });
 
 export default router;

@@ -35,7 +35,7 @@ const handleLogin = async () => {
   try {
     const res = await login(username.value, password.value);
     localStorage.setItem("token", res.data.token);
-    router.push("/");
+    router.push("/dashboard");
   } catch {
     error.value = "Username/password salah";
   }

@@ -1,43 +1,62 @@
 <template>
-  <aside
-    :class="[
-      'sidebar shadow-lg shadow-slate-400',
-      is_expanded && 'is-expanded',
-    ]"
-  >
+  <aside :class="['sidebar', is_expanded && 'is-expanded']">
     <div class="logo">
-      <img src="../assets/logo.png" alt="Vue" />
+      <img src="../assets/logo.png" alt="Vue Logo" />
     </div>
 
     <div class="menu-toggle-wrap">
-      <button class="menu-toggle" @click="ToggleMenu">
+      <button class="menu-toggle" @click="toggleMenu">
         <span class="material-icons">double_arrow</span>
       </button>
     </div>
 
     <h2 class="h2">Menu</h2>
     <div class="menu">
-      <router-link class="button" to="/">
+      <router-link
+        :to="'/dashboard'"
+        class="button"
+        :class="{ active: isActive('/') }"
+      >
         <span class="material-icons">home</span>
         <span class="text">Dashboard</span>
       </router-link>
-      <router-link class="button" to="/about">
+
+      <router-link
+        :to="'/about'"
+        class="button"
+        :class="{ active: isActive('/about') }"
+      >
         <span class="material-icons">assignment_ind</span>
         <span class="text">About</span>
       </router-link>
-      <router-link class="button" to="/guru">
+
+      <router-link
+        :to="'/guru'"
+        class="button"
+        :class="{ active: isActive('/guru') }"
+      >
         <span class="material-icons">group</span>
         <span class="text">Guru</span>
       </router-link>
-      <router-link class="button" to="/siswa">
+
+      <router-link
+        :to="'/siswa'"
+        class="button"
+        :class="{ active: isActive('/siswa') }"
+      >
         <span class="material-icons">people</span>
         <span class="text">Siswa</span>
       </router-link>
     </div>
 
     <div class="space"></div>
+
     <div class="menu">
-      <router-link class="button" to="/setting">
+      <router-link
+        :to="'/setting'"
+        class="button"
+        :class="{ active: isActive('/setting') }"
+      >
         <span class="material-icons">settings</span>
         <span class="text">Setting</span>
       </router-link>
@@ -47,12 +66,18 @@
 
 <script setup>
 import { defineModel } from "vue";
+import { useRoute } from "vue-router";
 
 const is_expanded = defineModel("expanded");
+const route = useRoute();
 
-const ToggleMenu = () => {
+const toggleMenu = () => {
   is_expanded.value = !is_expanded.value;
 };
+
+// Check if current route starts with target path
+const isActive = (path) =>
+  route.path === path || route.path.startsWith(path + "/");
 </script>
 
 <style lang="scss" scoped>
@@ -86,21 +111,17 @@ const ToggleMenu = () => {
     display: flex;
     justify-content: flex-end;
     margin-bottom: 1rem;
-    position: relative;
-    top: 0;
-    transition: 0.2s ease-out;
+
     .menu-toggle {
-      transition: 0.2s ease-out;
       .material-icons {
         font-size: 2rem;
         color: var(--dark);
-        transition: 0.2s ease-out;
+        transition: transform 0.3s;
       }
-      &:hover {
-        .material-icons {
-          color: var(--primary);
-          transform: translateX(0.5rem);
-        }
+
+      &:hover .material-icons {
+        color: var(--primary);
+        transform: translateX(0.5rem);
       }
     }
   }
@@ -120,31 +141,39 @@ const ToggleMenu = () => {
 
   .menu {
     margin: 0 -1rem;
+
     .button {
       display: flex;
       align-items: center;
       text-decoration: none;
       padding: 0.5rem 1rem;
+      transition: background-color 0.2s;
+
       .material-icons {
         font-size: 2rem;
         color: var(--dark);
       }
+
       .text {
         color: var(--dark);
         transition: 0.2s ease-out;
       }
+
       &:hover,
-      &.router-link-exact-active {
+      &.active {
         background-color: var(--primary);
+
         .material-icons,
         .text {
           color: var(--light);
         }
+
         .text {
           text-decoration: underline;
         }
       }
-      &.router-link-exact-active {
+
+      &.active {
         border-right: 5px solid var(--primary-alt);
       }
     }
@@ -158,10 +187,12 @@ const ToggleMenu = () => {
         transform: rotate(-180deg);
       }
     }
+
     h2,
     .button .text {
       opacity: 1;
     }
+
     .button .material-icons {
       margin-right: 1rem;
     }
