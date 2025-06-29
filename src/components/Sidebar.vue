@@ -39,14 +39,34 @@
         <span class="text">Guru</span>
       </router-link>
 
-      <router-link
-        :to="'/siswa'"
-        class="button"
-        :class="{ active: isActive('/siswa') }"
-      >
+      <!-- Parent Menu -->
+      <div class="button" @click="toggleSiswaDropdown">
         <span class="material-icons">people</span>
         <span class="text">Siswa</span>
-      </router-link>
+        <span class="material-icons ml-auto">
+          {{ siswaDropdownOpen ? "expand_less" : "expand_more" }}
+        </span>
+      </div>
+
+      <!-- Dropdown Child -->
+      <transition name="slide-fade">
+        <div v-if="siswaDropdownOpen" class="ml-6 flex flex-col">
+          <router-link
+            class="button text-sm"
+            :class="{ active: isActive('/siswa') }"
+            to="/siswa"
+          >
+            Data Siswa
+          </router-link>
+          <router-link
+            class="button text-sm"
+            :class="{ active: isActive('/kelas') }"
+            to="/kelas"
+          >
+            Data Kelas
+          </router-link>
+        </div>
+      </transition>
     </div>
 
     <div class="space"></div>
@@ -67,6 +87,7 @@
 <script setup>
 import { defineModel } from "vue";
 import { useRoute } from "vue-router";
+import { ref, watchEffect } from "vue";
 
 const is_expanded = defineModel("expanded");
 const route = useRoute();
@@ -78,6 +99,22 @@ const toggleMenu = () => {
 // Check if current route starts with target path
 const isActive = (path) =>
   route.path === path || route.path.startsWith(path + "/");
+
+const siswaDropdownOpen = ref(false);
+
+// Cek apakah path sekarang termasuk route anak dari menu Siswa
+const isSiswaSection = () =>
+  route.path.startsWith("/siswa") || route.path.startsWith("/kelas");
+
+// Manual toggle jika user klik parent menu
+const toggleSiswaDropdown = () => {
+  siswaDropdownOpen.value = !siswaDropdownOpen.value;
+};
+
+// Pantau perubahan route
+watchEffect(() => {
+  siswaDropdownOpen.value = isSiswaSection();
+});
 </script>
 
 <style lang="scss" scoped>
@@ -205,5 +242,14 @@ const isActive = (path) =>
   @media (max-width: 768px) {
     z-index: 99;
   }
+}
+.slide-fade-enter-active,
+.slide-fade-leave-active {
+  transition: all 0.3s ease;
+}
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateY(-4px);
 }
 </style>
