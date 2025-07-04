@@ -91,7 +91,7 @@ onMounted(loadSiswa);
 
 <template>
   <div class="p-1">
-    <h2 class="mb-4 text-xl font-bold">{{ route.meta.title }}</h2>
+    <h2 class="mb-4 text-3xl">{{ route.meta.title }}</h2>
 
     <div class="flex justify-start gap-6 overflow-x-auto rounded p-4">
       <div class="w-2/3 rounded shadow-md">

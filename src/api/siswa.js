@@ -21,6 +21,10 @@ export function getSiswaById(id) {
   return axios.get(`${API_URL}/siswa/show/${id}`, authHeader());
 }
 
+export function getKelas() {
+  return axios.get(`${API_URL}/siswa/kelas`, authHeader());
+}
+
 export function tambahSiswa(data) {
   return axios.post(`${API_URL}/siswa/store`, data, authHeader());
 }

@@ -10,13 +10,16 @@
       class="p-4 transition-all duration-300"
     >
       <BaseAlert />
-      <transition name="slide-fade" mode="out-in">
-        <RouterView />
-      </transition>
+      <router-view v-slot="{ Component }">
+        <transition name="slide-fade" mode="out-in">
+          <component :is="Component" :key="$route.fullPath" />
+        </transition>
+      </router-view>
     </main>
 
-    <!-- Untuk halaman public seperti '/' atau '/login' -->
-    <RouterView v-else />
+    <router-view v-else v-slot="{ Component }">
+      <component :is="Component" />
+    </router-view>
   </div>
 </template>
 

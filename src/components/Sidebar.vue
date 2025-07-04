@@ -1,7 +1,15 @@
 <template>
-  <aside :class="['sidebar', is_expanded && 'is-expanded']">
+  <aside
+    :class="[
+      'sidebar',
+      is_expanded && 'is-expanded',
+      'shadow-lg shadow-gray-400',
+    ]"
+  >
     <div class="logo">
-      <img src="../assets/logo.png" alt="Vue Logo" />
+      <div class="circle">
+        <img src="../assets/Logo_SMP.png" alt="Vue Logo" />
+      </div>
     </div>
 
     <div class="menu-toggle-wrap">
@@ -50,20 +58,22 @@
 
       <!-- Dropdown Child -->
       <transition name="slide-fade">
-        <div v-if="siswaDropdownOpen" class="ml-6 flex flex-col">
+        <div v-if="siswaDropdownOpen && is_expanded" class="ml-6 flex flex-col">
           <router-link
             class="button text-sm"
             :class="{ active: isActive('/siswa') }"
             to="/siswa"
           >
-            Data Siswa
+            <span class="material-icons">people</span>
+            <span class="text">Data Siswa</span>
           </router-link>
           <router-link
             class="button text-sm"
             :class="{ active: isActive('/kelas') }"
             to="/kelas"
           >
-            Data Kelas
+            <span class="material-icons">group</span>
+            <span class="text">Data Kelas</span>
           </router-link>
         </div>
       </transition>
@@ -80,17 +90,22 @@
         <span class="material-icons">settings</span>
         <span class="text">Setting</span>
       </router-link>
+      <button class="button w-full" @click="handleLogout">
+        <span class="material-icons">logout</span>
+        <span class="text">Logout</span>
+      </button>
     </div>
   </aside>
 </template>
 
 <script setup>
 import { defineModel } from "vue";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 import { ref, watchEffect } from "vue";
 
 const is_expanded = defineModel("expanded");
 const route = useRoute();
+const router = useRouter();
 
 const toggleMenu = () => {
   is_expanded.value = !is_expanded.value;
@@ -115,6 +130,12 @@ const toggleSiswaDropdown = () => {
 watchEffect(() => {
   siswaDropdownOpen.value = isSiswaSection();
 });
+
+// Logout
+const handleLogout = () => {
+  localStorage.removeItem("token");
+  router.push("/login");
+};
 </script>
 
 <style lang="scss" scoped>
@@ -138,9 +159,30 @@ watchEffect(() => {
   }
 
   .logo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
     margin-bottom: 1rem;
-    img {
-      width: 2rem;
+
+    .circle {
+      background-color: var(--light);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.3s ease;
+      flex-shrink: 0;
+
+      // Default (collapse)
+      width: 3rem;
+      height: 3rem;
+
+      img {
+        width: 2rem;
+        height: 2rem;
+        object-fit: contain;
+        transition: all 0.3s ease;
+      }
     }
   }
 
@@ -222,6 +264,16 @@ watchEffect(() => {
 
       .menu-toggle {
         transform: rotate(-180deg);
+      }
+    }
+
+    .circle {
+      width: 6rem;
+      height: 6rem;
+
+      img {
+        width: 5rem;
+        height: 5rem;
       }
     }
 

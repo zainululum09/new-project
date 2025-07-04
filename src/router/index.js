@@ -32,6 +32,12 @@ const routes = [
     meta: { title: "Data Siswa" },
   },
   {
+    path: "/kelas",
+    name: "Kelas",
+    component: () => import("../views/Kelas.vue"),
+    meta: { title: "Data Kelas" },
+  },
+  {
     path: "/setting",
     name: "Setting",
     component: () => import("../views/Setting.vue"),
