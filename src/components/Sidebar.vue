@@ -72,7 +72,7 @@
             :class="{ active: isActive('/kelas') }"
             to="/kelas"
           >
-            <span class="material-icons">group</span>
+            <span class="material-icons">contacts</span>
             <span class="text">Data Kelas</span>
           </router-link>
         </div>
@@ -144,7 +144,7 @@ const handleLogout = () => {
   top: 0;
   left: 0;
   height: 100vh;
-  z-index: 100;
+  z-index: 30;
   display: flex;
   flex-direction: column;
   overflow-y: auto;

@@ -25,14 +25,39 @@ export function getKelas() {
   return axios.get(`${API_URL}/siswa/kelas`, authHeader());
 }
 
+export function anggota(id) {
+  return axios.get(`${API_URL}/siswa/anggota/${id}`, authHeader());
+}
+
+export function nonKelas() {
+  return axios.get(`${API_URL}/siswa/siswaNon/`, authHeader());
+}
+
+export function tambahSiswaKelas() {
+  return axios.post(`${API_URL}/siswa/addSiswaKelas`, data, authHeader());
+}
+
 export function tambahSiswa(data) {
   return axios.post(`${API_URL}/siswa/store`, data, authHeader());
+}
+
+export function tambahKelas(data) {
+  return axios.post(`${API_URL}/siswa/addKelas`, data, authHeader());
 }
 
 export function updateSiswa(id, data) {
   return axios.put(`${API_URL}/siswa/update/${id}`, data, authHeader());
 }
 
+export function updateKelas(id, data) {
+  // return id, data;
+  return axios.put(`${API_URL}/siswa/updateKelas/${id}`, data, authHeader());
+}
+
 export function deleteSiswaById(id) {
   return axios.delete(`${API_URL}/siswa/delete/${id}`, authHeader());
+}
+
+export function deleteKelas(id) {
+  return axios.delete(`${API_URL}/siswa/deleteKelas/${id}`, authHeader());
 }
