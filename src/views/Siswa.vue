@@ -116,7 +116,7 @@ onMounted(loadSiswa);
             <tr
               v-for="(s, i) in siswa"
               :key="s.id"
-              class="text-sm text-gray-700 transition duration-150 ease-in-out hover:bg-orange-100"
+              class="text-sm uppercase text-gray-700 transition duration-150 ease-in-out hover:bg-orange-100"
               :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-200'"
             >
               <td class="border-t px-4 py-2 text-center">{{ i + 1 }}</td>

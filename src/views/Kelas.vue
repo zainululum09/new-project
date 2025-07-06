@@ -8,6 +8,7 @@ import {
   anggota,
   nonKelas,
   tambahSiswaKelas,
+  remAnggota,
 } from "../api/siswa";
 import { useRouter, useRoute } from "vue-router";
 import { useAlert } from "../components/useAlert";
@@ -25,6 +26,7 @@ const namaKelas = ref(null);
 
 const classMember = ref([]);
 const siswaBebas = ref([]);
+const tahunAjaranId = ref(null);
 
 const loadKelas = async () => {
   try {
@@ -62,7 +64,6 @@ const isLoading = ref(false);
 
 const anggotaKelas = async (id, nama_kelas) => {
   showModal.value = true;
-  isLoading.value = true;
   selectedKelasId.value = id;
   namaKelas.value = nama_kelas;
 
@@ -70,12 +71,16 @@ const anggotaKelas = async (id, nama_kelas) => {
     const cm = await anggota(id);
     classMember.value = cm.data.data;
 
+    // Ambil tahun_ajaran_id dari salah satu item atau dari kelas (jika tersedia)
+    tahunAjaranId.value =
+      cm.data.data[0]?.ta || cm.data.tahun_ajaran_id || null;
+
     const sb = await nonKelas();
     siswaBebas.value = sb.data.data;
+
+    console.log(tahunAjaranId.value);
   } catch (err) {
     showAlert("Not Found", "error");
-  } finally {
-    isLoading.value = false;
   }
 };
 
@@ -84,6 +89,13 @@ const closeModal = () => {
 };
 
 const tambahKeKelas = async (siswaId, tahunAjaranId) => {
+  console.log("siswaId:", siswaId);
+  console.log("kelasId:", selectedKelasId.value);
+  console.log("tahunAjaranId:", tahunAjaranId);
+  if (!siswaId || !selectedKelasId.value || !tahunAjaranId) {
+    showAlert("Data tidak lengkap", "error");
+    return;
+  }
   try {
     const payload = {
       siswa_id: siswaId,
@@ -94,7 +106,19 @@ const tambahKeKelas = async (siswaId, tahunAjaranId) => {
     showAlert("Siswa berhasil ditambahkan ke kelas", "success");
     await anggotaKelas(selectedKelasId.value, namaKelas.value); // refresh
   } catch (err) {
+    console.error(err);
     showAlert("Gagal menambahkan siswa", "error");
+  }
+};
+
+const removeMemberClass = async (id) => {
+  try {
+    await remAnggota(id);
+    showAlert("Siswa berhasil dikeluarkan dari kelas", "success");
+    await anggotaKelas(selectedKelasId.value, namaKelas.value); // refresh
+  } catch (err) {
+    console.error(err);
+    showAlert("Gagal mengeluarkan siswa", "error");
   }
 };
 
@@ -146,13 +170,23 @@ const resetForm = () => {
 
 onMounted(loadKelas);
 </script>
+<style scoped>
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
+}
+</style>
+
 <template>
   <div class="page-kelas">
     <!-- Modal Anggota Kelas -->
     <transition name="fade">
       <div
         v-if="showModal"
-        class="fixed inset-0 z-50 flex justify-center bg-black bg-opacity-50 py-6"
+        class="fixed inset-0 z-40 flex justify-center bg-black bg-opacity-50 py-6"
       >
         <div class="relative w-2/3 rounded-lg bg-white p-6 shadow-lg">
           <h2 class="mb-4 text-xl font-semibold">
@@ -160,77 +194,92 @@ onMounted(loadKelas);
           </h2>
 
           <div class="flex justify-start gap-2 overflow-x-auto rounded p-2">
-            <div class="w-1/2 rounded shadow-md">
-              <table
-                class="w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
-              >
-                <thead
-                  class="bg-sky-400 text-sm uppercase tracking-wide text-white"
-                >
-                  <tr class="text-center">
-                    <th class="px-4 py-3">#</th>
-                    <th class="px-4 py-3">Nama Siswa</th>
-                    <th class="px-4 py-3">L/P</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(s, i) in classMember"
-                    :key="s.id"
-                    class="text-sm text-gray-700 transition duration-150 ease-in-out hover:bg-orange-100"
-                    :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-200'"
+            <!-- Anggota Kelas -->
+            <div class="w-1/2 rounded border border-gray-200 shadow-md">
+              <div class="no-scrollbar max-h-[83vh] overflow-y-auto">
+                <table class="min-w-full table-fixed bg-white">
+                  <thead
+                    class="bg-sky-400 text-sm uppercase tracking-wide text-white"
                   >
-                    <td class="border-x px-4 py-2 text-center">{{ i + 1 }}</td>
-                    <td class="border-x px-4 py-2">
-                      {{ s.nama_siswa }}
-                    </td>
-                    <td class="border-x px-4 py-2 text-center">{{ s.jk }}</td>
-                  </tr>
-                </tbody>
-              </table>
+                    <tr class="text-center">
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">#</th>
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">
+                        Nama Siswa
+                      </th>
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">L/P</th>
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">@</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-if="classMember.filter((s) => s.siswa_id).length === 0"
+                      class="text-center text-sm text-gray-500"
+                    >
+                      <td colspan="4" class="border px-4 py-4">
+                        Belum Ada Anggota Kelas
+                      </td>
+                    </tr>
+                    <tr
+                      v-for="(s, i) in classMember.filter((s) => s.siswa_id)"
+                      :key="s.siswa_id"
+                      class="text-sm text-gray-700 transition duration-150 ease-in-out hover:bg-orange-100"
+                      :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-200'"
+                    >
+                      <td class="border px-4 py-2 text-center">{{ i + 1 }}</td>
+                      <td class="border px-4 py-2">{{ s.nama_siswa }}</td>
+                      <td class="border px-4 py-2 text-center">{{ s.jk }}</td>
+                      <td class="border px-4 py-2 text-center">
+                        <button
+                          @click="removeMemberClass(s.kelasSiswaId)"
+                          class="rounded-lg bg-red-400 px-1 py-0.5 text-white hover:bg-red-600"
+                        >
+                          <span class="material-icons">remove</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
-            <div class="w-1/2 rounded shadow-md">
-              <table
-                class="w-full overflow-hidden rounded-lg border border-gray-200 bg-white shadow-sm"
-              >
-                <thead
-                  class="bg-sky-400 text-sm uppercase tracking-wide text-white"
-                >
-                  <tr class="text-center">
-                    <th class="px-4 py-3">#</th>
-                    <th class="px-4 py-3">Nama Siswa</th>
-                    <th class="px-4 py-3">L/P</th>
-                    <th class="px-4 py-3">@</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <tr
-                    v-for="(s, i) in siswaBebas"
-                    :key="s.id"
-                    class="text-sm text-gray-700 transition duration-150 ease-in-out hover:bg-orange-100"
-                    :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-200'"
+
+            <!-- Siswa Bebas -->
+            <div class="w-1/2 rounded border border-gray-200 shadow-md">
+              <div class="no-scrollbar max-h-[83vh] overflow-y-auto">
+                <table class="min-w-full table-fixed bg-white">
+                  <thead
+                    class="bg-sky-400 text-sm uppercase tracking-wide text-white"
                   >
-                    <td class="border-x px-4 py-2 text-center">{{ i + 1 }}</td>
-                    <td class="border-x px-4 py-2">
-                      {{ s.nama_siswa }}
-                    </td>
-                    <td class="border-x px-4 py-2 text-center">{{ s.jk }}</td>
-                    <td class="px-4 py-2 text-center">
-                      <button
-                        @click="
-                          tambahKeKelas(
-                            s.siswa_id,
-                            classMember[0]?.tahun_ajaran_id
-                          )
-                        "
-                        class="rounded-lg bg-green-500 px-2 py-1 text-white hover:bg-green-600"
-                      >
-                        <span class="material-icons">add</span>
-                      </button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
+                    <tr class="text-center">
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">#</th>
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">
+                        Nama Siswa
+                      </th>
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">L/P</th>
+                      <th class="sticky top-0 bg-sky-400 px-4 py-3">@</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      v-for="(s, i) in siswaBebas"
+                      :key="s.id"
+                      class="text-sm text-gray-700 transition duration-150 ease-in-out hover:bg-orange-100"
+                      :class="i % 2 === 0 ? 'bg-white' : 'bg-gray-200'"
+                    >
+                      <td class="border px-4 py-2 text-center">{{ i + 1 }}</td>
+                      <td class="border px-4 py-2">{{ s.nama_siswa }}</td>
+                      <td class="border px-4 py-2 text-center">{{ s.jk }}</td>
+                      <td class="border px-4 py-2 text-center">
+                        <button
+                          @click="tambahKeKelas(s.siswa_id, classMember[0]?.ta)"
+                          class="rounded-lg bg-green-500 px-1 py-0.5 text-white hover:bg-green-600"
+                        >
+                          <span class="material-icons">add</span>
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
 
@@ -244,6 +293,7 @@ onMounted(loadKelas);
         </div>
       </div>
     </transition>
+
     <h2 class="text-3xl">{{ route.meta.title }}</h2>
 
     <div class="flex justify-start gap-16 overflow-x-auto rounded p-4">

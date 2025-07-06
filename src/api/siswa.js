@@ -33,8 +33,12 @@ export function nonKelas() {
   return axios.get(`${API_URL}/siswa/siswaNon/`, authHeader());
 }
 
-export function tambahSiswaKelas() {
+export function tambahSiswaKelas(data) {
   return axios.post(`${API_URL}/siswa/addSiswaKelas`, data, authHeader());
+}
+
+export function remAnggota(id) {
+  return axios.delete(`${API_URL}/siswa/remSiswaKelas/${id}`, authHeader());
 }
 
 export function tambahSiswa(data) {
