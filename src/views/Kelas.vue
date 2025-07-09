@@ -56,7 +56,6 @@ const editKelas = (data) => {
     tingkat: data.tingkat,
     tahun_ajaran_id: data.tahun_ajaran_id,
   };
-  console.log(form.value);
 };
 
 // Modal Anggota Kelas
@@ -77,8 +76,6 @@ const anggotaKelas = async (id, nama_kelas) => {
 
     const sb = await nonKelas();
     siswaBebas.value = sb.data.data;
-
-    console.log(tahunAjaranId.value);
   } catch (err) {
     showAlert("Not Found", "error");
   }
@@ -89,9 +86,6 @@ const closeModal = () => {
 };
 
 const tambahKeKelas = async (siswaId, tahunAjaranId) => {
-  console.log("siswaId:", siswaId);
-  console.log("kelasId:", selectedKelasId.value);
-  console.log("tahunAjaranId:", tahunAjaranId);
   if (!siswaId || !selectedKelasId.value || !tahunAjaranId) {
     showAlert("Data tidak lengkap", "error");
     return;
@@ -195,7 +189,7 @@ onMounted(loadKelas);
 
           <div class="flex justify-start gap-2 overflow-x-auto rounded p-2">
             <!-- Anggota Kelas -->
-            <div class="w-1/2 rounded border border-gray-200 shadow-md">
+            <div class="w-1/2">
               <div class="no-scrollbar max-h-[83vh] overflow-y-auto">
                 <table class="min-w-full table-fixed bg-white">
                   <thead
@@ -243,7 +237,7 @@ onMounted(loadKelas);
             </div>
 
             <!-- Siswa Bebas -->
-            <div class="w-1/2 rounded border border-gray-200 shadow-md">
+            <div class="w-1/2">
               <div class="no-scrollbar max-h-[83vh] overflow-y-auto">
                 <table class="min-w-full table-fixed bg-white">
                   <thead
