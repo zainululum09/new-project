@@ -69,6 +69,7 @@ const props = defineProps({
   kabupaten: String,
   kecamatan: String,
   desa: String,
+  onLoaded: Function,
 });
 
 // Emit untuk update ke induk (v-model)
@@ -150,6 +151,23 @@ watch(selectedDistrict, async (val) => {
 // Emit Desa saat dipilih
 watch(selectedVillage, (val) => {
   emit("update:desa", val);
+});
+
+let done = false;
+watchEffect(() => {
+  const ready =
+    selectedProvince.value &&
+    selectedRegency.value &&
+    selectedDistrict.value &&
+    selectedVillage.value &&
+    regencies.value.length &&
+    districts.value.length &&
+    villages.value.length;
+
+  if (ready && !done && typeof props.onLoaded === "function") {
+    props.onLoaded();
+    done = true;
+  }
 });
 
 // ⛳ Auto-select kembali jika props sudah ada DAN daftar sudah di-fetch

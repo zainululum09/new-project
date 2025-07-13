@@ -1,5 +1,7 @@
 <template>
   <div class="mx-auto max-w-full p-6">
+    <SpinnerOverlay :visible="isLoadingAlamat && !!siswa.propinsi" />
+
     <h2 class="mb-2 text-3xl font-semibold text-blue-600">
       Biodata - {{ siswa?.nama || "NAMA PESERTA DIDIK" }}
     </h2>
@@ -111,6 +113,7 @@
             v-model:kabupaten="siswa.kabupaten"
             v-model:kecamatan="siswa.kecamatan"
             v-model:desa="siswa.desa"
+            :onLoaded="onAlamatLoaded"
           />
           <textarea
             v-model="siswa.alamat"
@@ -158,11 +161,21 @@ import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { getSiswaById } from "../api/siswa";
 import Wilayah from "../components/Wilayah.vue";
+import SpinnerOverlay from "../components/SpinnerOverlay.vue";
 
 const route = useRoute();
 const router = useRouter();
 const siswa = ref({});
 
+// State loading sampai Wilayah.vue memberi sinyal selesai
+const isLoadingAlamat = ref(true);
+
+// Dipanggil oleh Wilayah.vue melalui props onLoaded
+const onAlamatLoaded = () => {
+  isLoadingAlamat.value = false;
+};
+
+// Ambil data siswa saat halaman dimuat
 onMounted(async () => {
   try {
     const res = await getSiswaById(route.params.id);
