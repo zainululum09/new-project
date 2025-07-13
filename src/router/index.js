@@ -55,6 +55,12 @@ const routes = [
     component: () => import("../views/DetailSiswa.vue"),
     meta: { title: "Detail Siswa" },
   },
+  {
+    path: "/wilayah",
+    name: "Wilayah",
+    component: () => import("../components/Wilayah.vue"),
+    meta: { title: "Wilayah" },
+  },
 ];
 
 const router = createRouter({

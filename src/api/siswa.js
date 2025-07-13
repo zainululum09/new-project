@@ -65,3 +65,13 @@ export function deleteSiswaById(id) {
 export function deleteKelas(id) {
   return axios.delete(`${API_URL}/siswa/deleteKelas/${id}`, authHeader());
 }
+
+// cari nama sekolah
+export function getSekolah(keyword) {
+  return axios.get(
+    `http://localhost/datasmp/siswa/getSekolah?keyword=${encodeURIComponent(
+      keyword
+    )}`,
+    authHeader()
+  );
+}
