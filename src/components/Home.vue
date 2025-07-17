@@ -20,7 +20,11 @@
         >
       </div>
       <div class="w-1/2">
-        <img src="/public/img/hero.jpg" alt="" class="rounded-2xl shadow-lg" />
+        <img
+          src="../assets/img/hero.jpg"
+          alt=""
+          class="rounded-2xl shadow-lg"
+        />
       </div>
     </section>
 
